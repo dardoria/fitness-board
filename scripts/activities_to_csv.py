@@ -82,11 +82,12 @@ def import_fit(file_path):
     fit_file = gzip.open(file_path, 'rb')
     stream = Stream.from_buffered_reader(fit_file)
     decoder = Decoder(stream)
-    messages, errors = decoder.read()
+    messages, _ = decoder.read()
 
     activity_id = str(uuid4())
     activity = {
         'id': activity_id,
+        # TODO: Multisport session
         'sport': messages['session_mesgs'][0]['sport'],
         'datetime': messages['activity_mesgs'][0]['timestamp']
     }
@@ -106,11 +107,11 @@ def import_fit(file_path):
     save_activity(activity, activity_records)
 
 
-def semicircles_to_degrees(cemicircles):
-    if cemicircles is None:
+def semicircles_to_degrees(semicircles):
+    if semicircles is None:
         return None
 
-    return float(cemicircles) * DEGREE_CONVERSION
+    return float(semicircles) * DEGREE_CONVERSION
 
 
 def run(directory: str):
