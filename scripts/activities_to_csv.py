@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from uuid import uuid4
 
-ACTIVITY_KEYS = ['id', 'sport', 'datetime']
+ACTIVITY_KEYS = ['id', 'sport', 'datetime', 'duration', 'total_time_seconds']
 RECORDS_KEYS = ['activity_id', 'datetime', 'altitude_meters',
                 'heart_rate_bpm', 'cadence', 'latitude_degrees', 'longitude_degrees', 'power']
 SPORTS = {'Running': 'running', 'Biking': 'cycling', 'Other': 'other'}
@@ -31,11 +31,15 @@ def import_tcx(file_path):
         activity = {
             'id': activity_id,
             'sport': SPORTS.get(activity_node.get('Sport')),
-            'datetime': activity_node.find('garmin:Id', ns).text
+            'datetime': activity_node.find('garmin:Id', ns).text,
+            'total_time_seconds': 0.0
         }
 
         laps = activity_node.findall('garmin:Lap', ns)
         for lap in laps:
+            lap_time = get_text(lap, 'garmin:TotalTimeSeconds', ns)
+            activity['total_time_seconds'] += float(lap_time)
+
             for track in lap.findall('garmin:Track', ns):
                 for track_point in track.findall('garmin:Trackpoint', ns):
                     position = track_point.find('garmin:Position', ns)
@@ -89,8 +93,11 @@ def import_fit(file_path):
         'id': activity_id,
         # TODO: Multisport session
         'sport': messages['session_mesgs'][0]['sport'],
-        'datetime': messages['activity_mesgs'][0]['timestamp']
+        'datetime': messages['activity_mesgs'][0]['timestamp'],
+        'total_time_seconds': 0,
     }
+    for lap in messages.get('lap_mesgs', []):
+        activity['total_time_seconds'] += lap['total_elapsed_time']
 
     activity_records = []
     for record in messages['record_mesgs']:
