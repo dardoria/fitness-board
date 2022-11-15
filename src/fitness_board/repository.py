@@ -71,3 +71,25 @@ def week_over_week(effective_date):
     to_date = effective_date + relativedelta(weekday=SU)
 
     return _week_over_week(from_date, to_date)
+
+
+def sports_stats(from_date, to_date):
+    query = f"""
+      select sport, sum(total_time_seconds) / 3600.0 as hours
+      from activities where datetime between '{from_date}' and '{to_date}'
+      group by 1
+      order by hours
+      """
+    return db_con.execute(query).df()
+
+
+def gpx(from_date, to_date):
+    query = f"""
+    select longitude_degrees, latitude_degrees
+    from activity_records 
+    where datetime between '{from_date}' 
+    and '{to_date}' 
+    and latitude_degrees > 0 
+    and longitude_degrees > 0
+    """
+    return db_con.execute(query).df()
