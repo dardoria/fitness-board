@@ -1,5 +1,6 @@
 # fintess-board
-A streamlit dashboard showing simple sport statistics based on TCX a and Fit activity files.
+
+A streamlit dashboard showing simple sport statistics based on .tcx and .fit activity files.
 
 Activity files were exported from Strava and then imported to DuckDB
 
@@ -7,10 +8,10 @@ Activity files were exported from Strava and then imported to DuckDB
 
 #### .fit and .tcx file formats and schemas
 
-https://developer.garmin.com/fit/overview/
-https://en.wikipedia.org/wiki/Training_Center_XML
-https://www8.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd
-https://github.com/garmin/fit-python-sdk
+- https://developer.garmin.com/fit/overview/
+- https://en.wikipedia.org/wiki/Training_Center_XML
+- https://www8.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd
+- https://github.com/garmin/fit-python-sdk
 
 #### Calculating performance
 
